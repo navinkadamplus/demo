@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+}
+.left {
+  flex: 1;
+  height: 650px;
+  background-color: cadetblue;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-evenly;
+}
+.left > .content {
+  height: 130px;
+  width: 200px;
+  margin: 10px;
+}
+.left > .content > img {
+  height: 130px;
+  width: 200px;
+}
+.right {
+  flex: 2;
+  height: 650px;
+  background-color: rgb(119, 160, 95);
+  align-content: center;
+}
+
+.canvas {
+  height: 400px !important;
+  width: 400px !important;
+  border: 5px dotted #6a8759;
+}
