@@ -23,7 +23,7 @@
   width: 200px;
 }
 .right {
-  flex: 2;
+  flex: 3.3;
   /* height: 650px; */
   background-color: rgb(119, 160, 95);
   align-content: center;
@@ -31,4 +31,11 @@
 
 .canvas {
   border: 5px dotted #6a8759;
+}
+
+.visibility {
+  visibility: hidden;
+}
+button {
+  margin: 5px;
 }

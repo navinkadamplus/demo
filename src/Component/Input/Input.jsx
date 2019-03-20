@@ -1,8 +1,8 @@
 import React from "react";
 
 export default function Input(props) {
-  let { id, type, value, onChangeFontSize, displayText } = props;
-  if (!(id && type && onChangeFontSize && displayText)) {
+  let { id, type, value, onChange, keypress, displayText } = props;
+  if (!(id && type && (onChange || keypress) && displayText)) {
     alert("fill all details--> id, type, value, onChangeFontSize, displayText");
     return (
       <div>
@@ -13,7 +13,14 @@ export default function Input(props) {
   return (
     <div>
       <label htmlFor={id}>{displayText} : </label>
-      <input id={id} type={type} value={value} onChange={onChangeFontSize} />
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        onKeyPress={keypress}
+        style={{ width: "40px" }}
+      />
     </div>
   );
 }
