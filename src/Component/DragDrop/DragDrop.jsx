@@ -18,6 +18,7 @@ export default class DragDrop extends Component {
   state = {
     selectedImg: "",
     selectedColor: "#000000",
+    selectedBackGroundColor: "#77a05f",
     selectedFontFamily: "Helvetica Neue",
     fontSize: 30,
     copyPasteVisibility: false,
@@ -65,18 +66,27 @@ export default class DragDrop extends Component {
   };
 
   drawImage = () => {
-    fabric.Image.fromURL(this.state.selectedImg.src, img => {
-      img
-        .set({
-          left: 0,
-          top: 0,
-          border: "#000",
-          stroke: "#F0F0F0",
-          strokeWidth: 30
-        })
-        .scale(0.2);
-      this.canvas.add(img).renderAll();
-    });
+    fabric.Image.fromURL(
+      this.state.selectedImg.src,
+      img => {
+        img
+          .set({
+            left: 0,
+            top: 0,
+            border: "#000",
+            stroke: "#F0F0F0",
+            strokeWidth: 5
+          })
+          .scale(0.2);
+        this.canvas.add(img).renderAll();
+      },
+      {
+        cornerStyle: "circle",
+        borderColor: "#53c5bf",
+        cornerColor: "#acdab5b8",
+        cornerSize: 10
+      }
+    );
     this.customsControl();
   };
 
@@ -105,6 +115,7 @@ export default class DragDrop extends Component {
     });
     a.download = "custom.png";
     a.click();
+    console.log(this.canvas);
   };
 
   onChangeFontFamily = e => {
@@ -148,12 +159,16 @@ export default class DragDrop extends Component {
     }
   };
 
+  onChangeBackGroundColor = e => {
+    this.setState({ selectedBackGroundColor: e.target.value }, () => {
+      this.canvas.setBackgroundColor(this.state.selectedBackGroundColor, () => {
+        this.canvas.renderAll();
+      });
+    });
+  };
+
   onChangeFontSize = e => {
     if (/^\d*$/.test(e.target.value)) {
-      if (e.target.value < 30) {
-        e.preventDefault();
-        return;
-      }
       if (this.canvas.getActiveObject()) {
         this.setState({ fontSize: e.target.value }, () => {
           this.canvas.getActiveObject().set("fontSize", this.state.fontSize);
@@ -173,7 +188,7 @@ export default class DragDrop extends Component {
       return "";
     }
     this.canvas.getActiveObject().toGroup();
-    this.canvas.requestRenderAll();
+    this.canvas.renderAll();
   };
 
   onUnGroup = e => {
@@ -184,7 +199,7 @@ export default class DragDrop extends Component {
       return;
     }
     this.canvas.getActiveObject().toActiveSelection();
-    this.canvas.requestRenderAll();
+    this.canvas.renderAll();
   };
 
   onMultipleSelection = e => {
@@ -193,7 +208,7 @@ export default class DragDrop extends Component {
       canvas: this.canvas
     });
     this.canvas.setActiveObject(sel);
-    this.canvas.requestRenderAll();
+    this.canvas.renderAll();
   };
 
   onCopy = e => {
@@ -242,13 +257,25 @@ export default class DragDrop extends Component {
   customsControl = e => {
     this.canvas.forEachObject(function(o) {
       o.set({
-        borderColor: "gray",
-        cornerColor: "black",
+        borderColor: "#53c5bf",
+        cornerColor: "#acdab5b8",
         cornerSize: 10,
         cornerStyle: "circle",
         transparentCorners: true
       });
     });
+  };
+
+  selectedObjectBackward = e => {
+    if (!this.canvas.getActiveObject()) return "";
+    this.canvas.sendToBack(this.canvas.getActiveObject());
+    this.canvas.renderAll();
+  };
+
+  selectedObjectForward = e => {
+    if (!this.canvas.getActiveObject()) return "";
+    this.canvas.bringForward(this.canvas.getActiveObject());
+    this.canvas.renderAll();
   };
 
   componentDidMount() {
@@ -262,10 +289,11 @@ export default class DragDrop extends Component {
       this.setState({ copyPasteVisibility: true });
     });
 
+    // visibility show Text Entered
     this.canvas.on("text:editing:entered", e => {
       this.setState({ textVisibility: true });
     });
-
+    // visibility hidden Text Entered
     this.canvas.on("text:editing:exited", e => {
       this.setState({ textVisibility: false });
     });
@@ -312,10 +340,29 @@ export default class DragDrop extends Component {
                     padding: "20px"
                   }}
                 >
+                  <Input
+                    id="backGroundColor"
+                    type="color"
+                    value={this.state.selectedBackGroundColor}
+                    onChange={this.onChangeBackGroundColor}
+                    displayText="Background Color"
+                  />
                   <div>
                     <button onClick={this.drawText}>Add Text</button>
                   </div>
+                  <div style={{ display: "flex" }}>
+                    <div>
+                      <button onClick={this.selectedObjectBackward}>
+                        Backward
+                      </button>
+                    </div>
 
+                    <div>
+                      <button onClick={this.selectedObjectForward}>
+                        forward
+                      </button>
+                    </div>
+                  </div>
                   <div style={{ display: "flex" }}>
                     <div>
                       <button onClick={this.onGroup}>Group</button>
@@ -400,9 +447,8 @@ export default class DragDrop extends Component {
               </div>
               <canvas
                 ref={this.canvasRef}
-                height="500px"
-                width="700px"
-                style={{ transform: "translate(50%,5%)" }}
+                height="500%"
+                width="700%"
                 className="canvas"
               />
             </div>
@@ -412,4 +458,4 @@ export default class DragDrop extends Component {
     );
   }
 }
-//selected object.bringForward();
+//Crop images

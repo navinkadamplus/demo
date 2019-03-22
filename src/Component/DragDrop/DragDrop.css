@@ -25,12 +25,12 @@
 .right {
   flex: 3.3;
   /* height: 650px; */
-  background-color: rgb(119, 160, 95);
+  background-color: #396986c4;
   align-content: center;
 }
 
 .canvas {
-  border: 5px dotted #6a8759;
+  border: 5px dotted #00d2ff;
 }
 
 .visibility {
@@ -38,4 +38,7 @@
 }
 button {
   margin: 5px;
+}
+.canvas-container {
+  margin: auto;
 }
