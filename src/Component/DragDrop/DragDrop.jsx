@@ -1,64 +1,65 @@
-import "./DragDrop.css";
-import { fabric } from "fabric";
+import './DragDrop.css';
+import { fabric } from 'fabric';
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import Images from "../Image/Images";
-import FontFamily from "../FontFamily/FontsFamily";
-import Input from "../Input/Input";
-import TextAlign from "../TextAlign/TextAlign";
+import Images from '../Image/Images';
+import FontFamily from '../Fonts/FontFamily/FontsFamily';
+import Input from '../Input/Input';
+import TextAlign from '../Fonts/TextAlign/TextAlign';
+import DrawText from '../DrawText/DrawText';
 
 export default class DragDrop extends Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
-    this.canvas = "";
+    this.canvas = '';
   }
 
   state = {
-    selectedImg: "",
-    selectedColor: "#000000",
-    selectedBackGroundColor: "#77a05f",
-    selectedFontFamily: "Helvetica Neue",
+    selectedImg: '',
+    selectedColor: '#000000',
+    selectedBackGroundColor: '#77a05f',
+    selectedFontFamily: 'Helvetica Neue',
     fontSize: 30,
     copyPasteVisibility: false,
     textVisibility: false,
-    selectedTextAlign: "",
+    selectedTextAlign: '',
     fontFamilys: [
-      "arial",
-      "optima",
-      "hoefler text",
-      "plaster",
-      "engagement",
-      "VT323",
-      "Helvetica Neue",
-      "myriad pro",
-      "comic sans ms",
-      "delicious",
-      "verdana",
-      "georgia",
-      "courier",
-      "impact",
-      "monaco"
+      'arial',
+      'optima',
+      'hoefler text',
+      'plaster',
+      'engagement',
+      'VT323',
+      'Helvetica Neue',
+      'myriad pro',
+      'comic sans ms',
+      'delicious',
+      'verdana',
+      'georgia',
+      'courier',
+      'impact',
+      'monaco'
     ],
-    textAligns: ["left", "right", "center", "justify"],
+    textAligns: ['left', 'right', 'center', 'justify'],
     imgSrc: [
-      "1.jpg",
-      "2.jpg",
-      "3.jpg",
-      "4.jpg",
-      "5.png",
-      "6.jpg",
-      "7.jpg",
-      "8.jpg",
-      "9.jpg",
-      "10.png",
-      "11.jpg",
-      "12.jpg",
-      "13.jpg",
-      "14.jpg"
+      '1.jpg',
+      '2.jpg',
+      '3.jpg',
+      '4.jpg',
+      '5.png',
+      '6.jpg',
+      '7.jpg',
+      '8.jpg',
+      '9.jpg',
+      '10.png',
+      '11.jpg',
+      '12.jpg',
+      '13.jpg',
+      '14.jpg'
     ],
-    cloneObject: ""
+    cloneObject: ''
   };
 
   onDragStart = event => {
@@ -73,17 +74,17 @@ export default class DragDrop extends Component {
           .set({
             left: 0,
             top: 0,
-            border: "#000",
-            stroke: "#F0F0F0",
+            border: '#000',
+            stroke: '#F0F0F0',
             strokeWidth: 5
           })
           .scale(0.2);
         this.canvas.add(img).renderAll();
       },
       {
-        cornerStyle: "circle",
-        borderColor: "#53c5bf",
-        cornerColor: "#acdab5b8",
+        cornerStyle: 'circle',
+        borderColor: '#53c5bf',
+        cornerColor: '#acdab5b8',
         cornerSize: 10
       }
     );
@@ -91,14 +92,14 @@ export default class DragDrop extends Component {
   };
 
   drawText = () => {
-    let text = new fabric.Textbox("type text", {
+    let text = new fabric.Textbox('type text', {
       left: 50,
       top: 20,
       width: 200,
       height: 200,
-      fontFamily: "helvetica neue",
+      fontFamily: 'helvetica neue',
       fill: this.state.selectedColor,
-      stroke: "#fff",
+      stroke: '#fff',
       fontSize: 30,
       strokeWidth: 0.1
     });
@@ -108,12 +109,12 @@ export default class DragDrop extends Component {
   };
 
   onDownloadImage = e => {
-    let a = document.createElement("a");
+    let a = document.createElement('a');
     a.href = this.canvas.toDataURL({
-      format: "png",
+      format: 'png',
       quality: 0.8
     });
-    a.download = "custom.png";
+    a.download = 'custom.png';
     a.click();
     console.log(this.canvas);
   };
@@ -123,11 +124,11 @@ export default class DragDrop extends Component {
       this.setState({ selectedFontFamily: e.target.value }, function() {
         this.canvas
           .getActiveObject()
-          .set("fontFamily", this.state.selectedFontFamily);
+          .set('fontFamily', this.state.selectedFontFamily);
         this.canvas.renderAll();
       });
     } else {
-      return alert("select Text");
+      return alert('select Text');
     }
   };
 
@@ -136,11 +137,11 @@ export default class DragDrop extends Component {
       this.setState({ selectedTextAlign: e.target.value }, function() {
         this.canvas
           .getActiveObject()
-          .set("textAlign", this.state.selectedTextAlign);
+          .set('textAlign', this.state.selectedTextAlign);
         this.canvas.renderAll();
       });
     } else {
-      return alert("select Text");
+      return alert('select Text');
     }
   };
 
@@ -151,11 +152,11 @@ export default class DragDrop extends Component {
   onChangeColor = e => {
     if (this.canvas.getActiveObject()) {
       this.setState({ selectedColor: e.target.value }, () => {
-        this.canvas.getActiveObject().set("fill", this.state.selectedColor);
+        this.canvas.getActiveObject().set('fill', this.state.selectedColor);
         this.canvas.renderAll();
       });
     } else {
-      return alert("select Text");
+      return alert('select Text');
     }
   };
 
@@ -171,11 +172,11 @@ export default class DragDrop extends Component {
     if (/^\d*$/.test(e.target.value)) {
       if (this.canvas.getActiveObject()) {
         this.setState({ fontSize: e.target.value }, () => {
-          this.canvas.getActiveObject().set("fontSize", this.state.fontSize);
+          this.canvas.getActiveObject().set('fontSize', this.state.fontSize);
           this.canvas.renderAll();
         });
       } else {
-        return alert("select Text");
+        return alert('select Text');
       }
     }
   };
@@ -183,9 +184,9 @@ export default class DragDrop extends Component {
   onGroup = e => {
     if (
       !this.canvas.getActiveObject() ||
-      this.canvas.getActiveObject().type !== "activeSelection"
+      this.canvas.getActiveObject().type !== 'activeSelection'
     ) {
-      return "";
+      return '';
     }
     this.canvas.getActiveObject().toGroup();
     this.canvas.renderAll();
@@ -195,7 +196,7 @@ export default class DragDrop extends Component {
     if (!this.canvas.getActiveObject()) {
       return;
     }
-    if (this.canvas.getActiveObject().type !== "group") {
+    if (this.canvas.getActiveObject().type !== 'group') {
       return;
     }
     this.canvas.getActiveObject().toActiveSelection();
@@ -213,7 +214,7 @@ export default class DragDrop extends Component {
 
   onCopy = e => {
     if (this.canvas.getActiveObject() === undefined) {
-      return "";
+      return '';
     }
     this.canvas.getActiveObject().clone(cloned => {
       this.setState({ cloneObject: cloned });
@@ -223,11 +224,11 @@ export default class DragDrop extends Component {
   onPaste = e => {
     let _cloneObject = this.state.cloneObject;
     if (
-      _cloneObject === "" ||
+      _cloneObject === '' ||
       _cloneObject === null ||
       _cloneObject === undefined
     ) {
-      return "";
+      return '';
     }
     _cloneObject.clone(clonedObj => {
       this.canvas.discardActiveObject();
@@ -236,13 +237,13 @@ export default class DragDrop extends Component {
         top: clonedObj.top + 10,
         evented: true
       });
-      if (clonedObj.type === "activeSelection") {
+      if (clonedObj.type === 'activeSelection') {
         clonedObj.canvas = this.canvas;
         clonedObj.forEachObject(function(obj) {
           this.canvas.add(obj);
         });
         clonedObj.setCoords();
-        alert("activeSelection");
+        alert('activeSelection');
       } else {
         this.canvas.add(clonedObj);
       }
@@ -257,23 +258,23 @@ export default class DragDrop extends Component {
   customsControl = e => {
     this.canvas.forEachObject(function(o) {
       o.set({
-        borderColor: "#53c5bf",
-        cornerColor: "#acdab5b8",
+        borderColor: '#53c5bf',
+        cornerColor: '#acdab5b8',
         cornerSize: 10,
-        cornerStyle: "circle",
+        cornerStyle: 'circle',
         transparentCorners: true
       });
     });
   };
 
   selectedObjectBackward = e => {
-    if (!this.canvas.getActiveObject()) return "";
+    if (!this.canvas.getActiveObject()) return '';
     this.canvas.sendToBack(this.canvas.getActiveObject());
     this.canvas.renderAll();
   };
 
   selectedObjectForward = e => {
-    if (!this.canvas.getActiveObject()) return "";
+    if (!this.canvas.getActiveObject()) return '';
     this.canvas.bringForward(this.canvas.getActiveObject());
     this.canvas.renderAll();
   };
@@ -283,22 +284,22 @@ export default class DragDrop extends Component {
       preserveObjectStacking: true
     });
 
-    this.canvas.on("drop", this.drawImage);
+    this.canvas.on('drop', this.drawImage);
 
-    this.canvas.on("object:selected", e => {
+    this.canvas.on('object:selected', e => {
       this.setState({ copyPasteVisibility: true });
     });
 
     // visibility show Text Entered
-    this.canvas.on("text:editing:entered", e => {
+    this.canvas.on('text:editing:entered', e => {
       this.setState({ textVisibility: true });
     });
     // visibility hidden Text Entered
-    this.canvas.on("text:editing:exited", e => {
+    this.canvas.on('text:editing:exited', e => {
       this.setState({ textVisibility: false });
     });
 
-    document.addEventListener("keydown", key => {
+    document.addEventListener('keydown', key => {
       if (this.canvas.getActiveObject()) {
         if (key.shiftKey && key.keyCode === 68)
           // 46 delete 68 D key.keyCode === 46 ||
@@ -317,8 +318,8 @@ export default class DragDrop extends Component {
   }
 
   componentWillUnmount() {
-    this.canvas.off("drop");
-    document.removeEventListener("keypress");
+    this.canvas.off('drop');
+    document.removeEventListener('keypress');
   }
   render() {
     return (
@@ -335,11 +336,10 @@ export default class DragDrop extends Component {
               <div>
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    padding: "20px"
-                  }}
-                >
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    padding: '20px'
+                  }}>
                   <Input
                     id="backGroundColor"
                     type="color"
@@ -347,10 +347,8 @@ export default class DragDrop extends Component {
                     onChange={this.onChangeBackGroundColor}
                     displayText="Background Color"
                   />
-                  <div>
-                    <button onClick={this.drawText}>Add Text</button>
-                  </div>
-                  <div style={{ display: "flex" }}>
+                  <DrawText canvas={this.canvas} />
+                  <div style={{ display: 'flex' }}>
                     <div>
                       <button onClick={this.selectedObjectBackward}>
                         Backward
@@ -363,7 +361,7 @@ export default class DragDrop extends Component {
                       </button>
                     </div>
                   </div>
-                  <div style={{ display: "flex" }}>
+                  <div style={{ display: 'flex' }}>
                     <div>
                       <button onClick={this.onGroup}>Group</button>
                     </div>
@@ -371,7 +369,7 @@ export default class DragDrop extends Component {
                       <button onClick={this.onUnGroup}>UnGroup</button>
                     </div>
                   </div>
-                  <div style={{ display: "flex" }}>
+                  <div style={{ display: 'flex' }}>
                     <div>
                       <button onClick={this.onMultipleSelection}>
                         Multiple Selection
@@ -382,8 +380,7 @@ export default class DragDrop extends Component {
                         onClick={e =>
                           this.canvas.discardActiveObject() &&
                           this.canvas.requestRenderAll()
-                        }
-                      >
+                        }>
                         Deselect
                       </button>
                     </div>
@@ -396,12 +393,11 @@ export default class DragDrop extends Component {
 
                   <div
                     style={{
-                      display: "flex"
+                      display: 'flex'
                     }}
                     className={
-                      !this.state.copyPasteVisibility ? "visibility" : ""
-                    }
-                  >
+                      !this.state.copyPasteVisibility ? 'visibility' : ''
+                    }>
                     <div>
                       <button onClick={this.onCopy}>Copy</button>
                     </div>
@@ -412,12 +408,11 @@ export default class DragDrop extends Component {
                 </div>
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    padding: "20px"
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    padding: '20px'
                   }}
-                  className={!this.state.textVisibility ? "visibility" : ""}
-                >
+                  className={!this.state.textVisibility ? 'visibility' : ''}>
                   <FontFamily
                     selectedFontFamily={this.state.selectedFontFamily}
                     fonts={this.state.fontFamilys}
