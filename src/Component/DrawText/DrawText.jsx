@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import { fabric } from 'fabric';
 
 export default class DrawText extends Component {
-  constructor(props) {
-    super(props);
-    this.canvas = this.props.canvas;
-    console.log(this.props);
-  }
   drawText = () => {
     let text = new fabric.Textbox('type text', {
       left: 50,
