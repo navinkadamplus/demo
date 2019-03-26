@@ -124,7 +124,8 @@ class DragDrop extends Component {
       multiplier: 1.0
     });
     a.download = "custom.png";
-    a.click();
+    // a.click();
+    console.log(JSON.stringify(this.canvas.toJSON()));
   };
 
   onChangeFontFamily = e => {
@@ -563,3 +564,13 @@ export default connect(
 //     height: this.canvas.height,
 //     selectable: false
 //   });
+
+// --------------------------------------------------------
+
+// this.canvas.loadFromJSON(
+//   `{"version":"2.7.0","objects":[{"type":"image","version":"2.7.0","originX":"left","originY":"top","left":0,"top":0,"width":748,"height":421,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":0.67,"scaleY":0.67,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"src":"http://localhost:3000/assets/image/4.jpg","filters":[]},{"type":"image","version":"2.7.0","originX":"left","originY":"top","left":194.23,"top":107.84,"width":640,"height":360,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":0.78,"scaleY":0.78,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"src":"http://localhost:3000/assets/image/6.jpg","filters":[]},{"type":"textbox","version":"2.7.0","originX":"left","originY":"top","left":313.24,"top":218.04,"width":80,"height":25.42,"fill":"black","stroke":"#fff","strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"type text","fontSize":22.5,"fontWeight":"normal","fontFamily":"helvetica neue","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"minWidth":20,"splitByGrapheme":false,"styles":{}}]}`,
+//   this.canvas.renderAll.bind(this.canvas),
+//   function(o, object) {
+//     fabric.log(o, object);
+//   }
+// );
