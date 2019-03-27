@@ -1,18 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 
-export default function Input(props) {
-  let {
-    id,
-    type,
-    value,
-    onChange,
-    keypress,
-    displayText,
-    rangeMin,
-    rangeMax,
-    rangeStep
-  } = props;
-  if (!(id && type && (onChange || keypress) && displayText)) {
+export default memo(function Input(props) {
+  let { id, type, value, onChange, displayText } = props;
+  if (!(id && type && onChange && displayText)) {
     alert("fill all details--> id, type, value, onChangeFontSize, displayText");
     return (
       <div>
@@ -29,12 +19,8 @@ export default function Input(props) {
         type={type}
         value={value}
         onChange={onChange}
-        onKeyPress={keypress}
         // style={{ width: "40px" }}
-        min={rangeMin ? rangeMin : ""}
-        max={rangeMax ? rangeMax : ""}
-        step={rangeStep ? rangeStep : ""}
       />
     </div>
   );
-}
+});

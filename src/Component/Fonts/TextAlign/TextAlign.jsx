@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-export default function TextAlign(props) {
+export default memo(function TextAlign(props) {
   let { selectedTextAlign, onChangeTextAlign, aligns } = props;
   if (!(onChangeTextAlign && aligns)) {
     alert("fill all details--> onChangeTextAlign,aligns ");
@@ -22,4 +22,4 @@ export default function TextAlign(props) {
       </select>
     </div>
   );
-}
+});

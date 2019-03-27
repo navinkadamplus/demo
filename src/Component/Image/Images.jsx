@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-export default function Images(props) {
+export default memo(function Images(props) {
   let { src, onDragStart } = props;
   return (
     <div className="content">
@@ -12,4 +12,4 @@ export default function Images(props) {
       />
     </div>
   );
-}
+});

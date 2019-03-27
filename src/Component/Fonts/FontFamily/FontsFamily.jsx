@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-export default function FontFamily(props) {
+export default memo(function FontFamily(props) {
   let { selectedFontFamily, onChangeFontFamily, fonts } = props;
   if (!(onChangeFontFamily && fonts)) {
     alert("fill all details--> onChangeFontFamily && fonts");
@@ -22,4 +22,4 @@ export default function FontFamily(props) {
       </select>
     </div>
   );
-}
+});

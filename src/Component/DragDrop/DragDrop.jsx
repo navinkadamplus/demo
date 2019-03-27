@@ -1,78 +1,57 @@
 import "./DragDrop.css";
 import { fabric } from "fabric";
-
-import React, { Component } from "react";
-
-import Images from "../Image/Images";
-import FontFamily from "../FontFamily/FontsFamily";
-import Input from "../Input/Input";
-import TextAlign from "../TextAlign/TextAlign";
+import React, { PureComponent } from "react";
 
 import { connect } from "react-redux";
+import { getImageSrc } from "../../actions/FetchImages/FetchImage";
+import { getFontsList } from "../../actions/FetchFontFamily/FetchFontFamily";
 
-class DragDrop extends Component {
+import {
+  DrawText,
+  Images,
+  FontFamily,
+  Input,
+  TextAlign,
+  Download,
+  Group,
+  Ungroup,
+  MultipleSelection,
+  Backward,
+  Forward,
+  RangeBarReact,
+  ButtonReact
+} from "../Import/ImportModules";
+
+fabric.Object.prototype.set({
+  borderColor: "#53c5bf",
+  cornerColor: "#acdab5b8",
+  cornerSize: 10,
+  padding: 1,
+  hasBorders: true,
+  rotatingPointOffset: 20,
+  cornerStyle: "circle"
+  // transparentCorners: true
+});
+
+class DragDrop extends PureComponent {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
-    this.canvas = "";
-    fabric.Object.prototype.set({
-      borderColor: "#53c5bf",
-      cornerColor: "#acdab5b8",
-      cornerSize: 10,
-      padding: 1,
-      hasBorders: false,
-      rotatingPointOffset: 20,
-      cornerStyle: "circle"
-      // transparentCorners: true
-    });
   }
 
   state = {
+    canvas: "",
     selectedImg: "",
     selectedColor: "#000000",
-    lineHeight: 1.16,
-    transparent: 100,
-    letterSpacing: 10,
     selectedBackGroundColor: "#77a05f",
     selectedFontFamily: "Helvetica Neue",
     fontSize: 30,
     copyPasteVisibility: false,
     textVisibility: false,
     selectedTextAlign: "",
-    fontFamilys: [
-      "arial",
-      "optima",
-      "hoefler text",
-      "plaster",
-      "engagement",
-      "VT323",
-      "Helvetica Neue",
-      "myriad pro",
-      "comic sans ms",
-      "delicious",
-      "verdana",
-      "georgia",
-      "courier",
-      "impact",
-      "monaco"
-    ],
+    fontFamilys: [],
     textAligns: ["left", "right", "center", "justify"],
-    imgSrc: [
-      "1.jpg",
-      "2.jpg",
-      "3.jpg",
-      "4.jpg",
-      "5.png",
-      "6.jpg",
-      "7.jpg",
-      "8.jpg",
-      "9.jpg",
-      "10.png",
-      "11.jpg",
-      "12.jpg",
-      "13.jpg",
-      "14.jpg"
-    ],
+    imgSrc: [],
     cloneObject: ""
   };
 
@@ -92,71 +71,39 @@ class DragDrop extends Component {
       });
       img.scaleToHeight(500);
       img.scaleToWidth(500);
-      this.canvas.add(img).renderAll();
+      this.state.canvas.add(img).renderAll();
     });
-  };
-
-  drawText = () => {
-    let text = new fabric.Textbox("type text", {
-      left: 50,
-      top: 20,
-      width: 80,
-      height: 200,
-      fontFamily: "helvetica neue",
-      fill: "black",
-      stroke: "#fff",
-      fontSize: (30 * 72) / 96,
-      strokeWidth: 0
-    });
-
-    text.setControlsVisibility({
-      mt: false,
-      mb: false
-    });
-    this.canvas.add(text);
-  };
-
-  onDownloadImage = e => {
-    let a = document.createElement("a");
-    a.href = this.canvas.toDataURL({
-      format: "png",
-      quality: 1.0,
-      multiplier: 1.0
-    });
-    a.download = "custom.png";
-    // a.click();
-    console.log(JSON.stringify(this.canvas.toJSON()));
   };
 
   onChangeFontFamily = e => {
-    if (this.canvas.getActiveObject()) {
+    if (this.state.canvas.getActiveObject()) {
       this.setState({ selectedFontFamily: e.target.value });
-      this.canvas.getActiveObject().set("fontFamily", e.target.value);
-      this.canvas.renderAll();
+      this.state.canvas.getActiveObject().set("fontFamily", e.target.value);
+      this.state.canvas.renderAll();
     } else {
       return alert("select Text");
     }
   };
 
   onChangeTextAlign = e => {
-    if (this.canvas.getActiveObject()) {
+    if (this.state.canvas.getActiveObject()) {
       this.setState({ selectedTextAlign: e.target.value });
-      this.canvas.getActiveObject().set("textAlign", e.target.value);
-      this.canvas.renderAll();
+      this.state.canvas.getActiveObject().set("textAlign", e.target.value);
+      this.state.canvas.renderAll();
     } else {
       return alert("select Text");
     }
   };
 
   onRemoveElement = key => {
-    this.canvas.remove(this.canvas.getActiveObject());
+    this.state.canvas.remove(this.state.canvas.getActiveObject());
   };
 
   onChangeColor = e => {
-    if (this.canvas.getActiveObject()) {
+    if (this.state.canvas.getActiveObject()) {
       this.setState({ selectedColor: e.target.value });
-      this.canvas.getActiveObject().set("fill", e.target.value);
-      this.canvas.renderAll();
+      this.state.canvas.getActiveObject().set("fill", e.target.value);
+      this.state.canvas.renderAll();
     } else {
       return alert("select Text");
     }
@@ -164,96 +111,37 @@ class DragDrop extends Component {
 
   onChangeBackGroundColor = e => {
     this.setState({ selectedBackGroundColor: e.target.value }, () => {
-      this.canvas.setBackgroundColor(this.state.selectedBackGroundColor, () => {
-        this.canvas.renderAll();
-      });
+      this.state.canvas.setBackgroundColor(
+        this.state.selectedBackGroundColor,
+        () => {
+          this.state.canvas.renderAll();
+        }
+      );
     });
   };
 
   onChangeFontSize = e => {
     if (/^\d*$/.test(e.target.value)) {
-      if (this.canvas.getActiveObject()) {
+      if (this.state.canvas.getActiveObject()) {
         this.setState({ fontSize: e.target.value });
-        this.canvas
+        this.state.canvas
           .getActiveObject()
           .set("fontSize", (e.target.value * 72) / 96);
-        this.canvas.renderAll();
+        this.state.canvas.renderAll();
       } else {
         return alert("select Text");
       }
     }
   };
 
-  onChangeLineHeight = e => {
-    if (this.canvas.getActiveObject()) {
-      this.setState({ lineHeight: e.target.value });
-      this.canvas.getActiveObject().set("lineHeight", e.target.value);
-      this.canvas.renderAll();
-    } else {
-      return alert("select Text");
-    }
-  };
-
-  onChangeLetterSpacing = e => {
-    if (this.canvas.getActiveObject()) {
-      this.setState({ letterSpacing: e.target.value });
-      this.canvas.getActiveObject().set("charSpacing", e.target.value);
-      this.canvas.renderAll();
-    } else {
-      return alert("select Text");
-    }
-  };
-  onChangeTransparent = e => {
-    if (this.canvas.getActiveObject()) {
-      this.setState({ transparent: e.target.value });
-      this.canvas
-        .getActiveObject()
-        .set("opacity", String(e.target.value * 0.01).substr(0, 4));
-      this.canvas.renderAll();
-    } else {
-      return alert("select object");
-    }
-  };
-
-  onGroup = e => {
-    if (
-      !this.canvas.getActiveObject() ||
-      this.canvas.getActiveObject().type !== "activeSelection"
-    ) {
-      return "";
-    }
-    this.canvas.getActiveObject().toGroup();
-    this.canvas.renderAll();
-  };
-
-  onUnGroup = e => {
-    if (!this.canvas.getActiveObject()) {
-      return;
-    }
-    if (this.canvas.getActiveObject().type !== "group") {
-      return;
-    }
-    this.canvas.getActiveObject().toActiveSelection();
-    this.canvas.renderAll();
-  };
-
-  onMultipleSelection = e => {
-    this.canvas.discardActiveObject();
-    var sel = new fabric.ActiveSelection(this.canvas.getObjects(), {
-      canvas: this.canvas
-    });
-    this.canvas.setActiveObject(sel);
-    this.canvas.renderAll();
-  };
-
   onCopy = e => {
     if (
-      this.canvas.getActiveObject() === undefined ||
-      this.canvas.getActiveObject() === null
+      this.state.canvas.getActiveObject() === undefined ||
+      this.state.canvas.getActiveObject() === null
     ) {
       return "";
     }
-    this.canvas.getActiveObject().clone(cloned => {
+    this.state.canvas.getActiveObject().clone(cloned => {
       this.setState({ cloneObject: cloned });
     });
   };
@@ -268,89 +156,59 @@ class DragDrop extends Component {
       return "";
     }
     _cloneObject.clone(clonedObj => {
-      this.canvas.discardActiveObject();
+      this.state.canvas.discardActiveObject();
       clonedObj.set({
         left: clonedObj.left + 10,
         top: clonedObj.top + 10,
         evented: true
       });
       if (clonedObj.type === "activeSelection") {
-        clonedObj.canvas = this.canvas;
+        clonedObj.canvas = this.state.canvas;
         clonedObj.forEachObject(function(obj) {
-          this.canvas.add(obj);
+          this.state.canvas.add(obj);
         });
         clonedObj.setCoords();
         alert("activeSelection");
       } else {
-        this.canvas.add(clonedObj);
+        this.state.canvas.add(clonedObj);
       }
       _cloneObject.top += 10;
       _cloneObject.left += 10;
-      this.canvas.setActiveObject(clonedObj);
-      this.canvas.requestRenderAll();
+      this.state.canvas.setActiveObject(clonedObj);
+      this.state.canvas.requestRenderAll();
     });
-  };
-
-  selectedObjectBackward = e => {
-    if (!this.canvas.getActiveObject()) return "";
-    this.canvas.sendToBack(this.canvas.getActiveObject());
-    this.canvas.renderAll();
-  };
-
-  selectedObjectForward = e => {
-    if (!this.canvas.getActiveObject()) return "";
-    this.canvas.bringForward(this.canvas.getActiveObject());
-    this.canvas.renderAll();
-  };
-
-  onClickBold = e => {
-    if (this.canvas.getActiveObject().fontWeight === "normal") {
-      this.canvas.getActiveObject().set("fontWeight", "bold");
-      this.canvas.renderAll();
-    } else if (this.canvas.getActiveObject().fontWeight === "bold") {
-      this.canvas.getActiveObject().set("fontWeight", "normal");
-      this.canvas.renderAll();
-    }
-  };
-  onClickUnderLine = e => {
-    if (!this.canvas.getActiveObject().underline) {
-      this.canvas.getActiveObject().set("underline", true);
-      this.canvas.renderAll();
-    } else {
-      this.canvas.getActiveObject().set("underline", false);
-      this.canvas.renderAll();
-    }
   };
 
   componentDidMount() {
-    this.canvas = new fabric.Canvas(this.canvasRef.current, {
+    let canvas = new fabric.Canvas(this.canvasRef.current, {
       preserveObjectStacking: true,
       uniScaleTransform: true
     });
+    this.setState({ canvas: canvas });
 
-    this.canvas.on("drop", this.drawImage);
+    canvas.on("drop", this.drawImage);
 
     // visibility show Text Entered
-    this.canvas.on("text:editing:entered", e => {
+    canvas.on("text:editing:entered", e => {
       this.setState({ textVisibility: true });
     });
 
     // visibility hidden Text Entered
-    this.canvas.on("text:editing:exited", e => {
+    canvas.on("text:editing:exited", e => {
       this.setState({ textVisibility: false });
     });
 
     // visibility show copy
-    this.canvas.on("object:selected", e => {
+    canvas.on("object:selected", e => {
       this.setState({ copyPasteVisibility: true });
     });
     // visibility hidden copy
-    this.canvas.on("selection:cleared", e => {
+    canvas.on("selection:cleared", e => {
       this.setState({ copyPasteVisibility: false });
     });
 
     document.addEventListener("keydown", key => {
-      if (this.canvas.getActiveObject()) {
+      if (canvas.getActiveObject()) {
         if (key.shiftKey && key.keyCode === 68)
           // 46 delete 68 D key.keyCode === 46 ||
           //selected Object Delete
@@ -365,10 +223,20 @@ class DragDrop extends Component {
           this.onCopy();
       }
     });
+    this.props.onGetImageSrc();
+    this.props.onGetFontsList();
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.imgSrcData.readyState === 4) {
+      return { imgSrc: nextProps.imgSrcData.imgSrcList };
+    } else if (nextProps.fontListData.readyState === 4) {
+      return { fontFamilys: nextProps.fontListData.fontList };
+    } else return null;
   }
 
   componentWillUnmount() {
-    this.canvas.off("drop");
+    this.state.canvas.off("drop");
     document.removeEventListener("keypress");
   }
   render() {
@@ -398,41 +266,21 @@ class DragDrop extends Component {
                     onChange={this.onChangeBackGroundColor}
                     displayText="Background Color"
                   />
-                  <div>
-                    <button onClick={this.drawText}>Add Text</button>
-                  </div>
-
+                  <DrawText canvas={this.state.canvas} />
                   <div style={{ display: "flex" }}>
-                    <div>
-                      <button onClick={this.onGroup}>Group</button>
-                    </div>
-                    <div>
-                      <button onClick={this.onUnGroup}>UnGroup</button>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex" }}>
-                    <div>
-                      <button onClick={this.onMultipleSelection}>
-                        Multiple Selection
-                      </button>
-                    </div>
+                    <MultipleSelection canvas={this.state.canvas} />
                     <div>
                       <button
                         onClick={e =>
-                          this.canvas.discardActiveObject() &&
-                          this.canvas.requestRenderAll()
+                          this.state.canvas.discardActiveObject() &&
+                          this.state.canvas.requestRenderAll()
                         }
                       >
                         Deselect
                       </button>
                     </div>
                   </div>
-                  <div>
-                    <button onClick={this.onDownloadImage}>
-                      download Image
-                    </button>
-                  </div>
-
+                  <Download canvas={this.state.canvas} />
                   <div
                     style={{
                       display: "flex"
@@ -442,27 +290,21 @@ class DragDrop extends Component {
                     }
                   >
                     <div style={{ display: "flex" }}>
-                      <div>
-                        <button onClick={this.selectedObjectBackward}>
-                          Backward
-                        </button>
-                      </div>
-
-                      <div>
-                        <button onClick={this.selectedObjectForward}>
-                          forward
-                        </button>
-                      </div>
+                      <Group canvas={this.state.canvas} />
+                      <Ungroup canvas={this.state.canvas} />
                     </div>
-                    <Input
+                    <div style={{ display: "flex" }}>
+                      <Backward canvas={this.state.canvas} />
+                      <Forward canvas={this.state.canvas} />
+                    </div>
+                    <RangeBarReact
+                      canvas={this.state.canvas}
                       id="transparent"
-                      type="range"
-                      value={this.state.transparent}
-                      onChange={this.onChangeTransparent}
                       displayText="Transparent"
                       rangeMin={0}
                       rangeMax={100}
-                      // rangeStep={10}
+                      rangeStep={10}
+                      value={100}
                     />
                     <div>
                       <button onClick={this.onCopy}>Copy</button>
@@ -505,28 +347,41 @@ class DragDrop extends Component {
                     onChange={this.onChangeFontSize}
                     displayText="Font Size"
                   />
-                  <Input
+
+                  <RangeBarReact
+                    canvas={this.state.canvas}
                     id="lineHeight"
-                    type="range"
-                    value={this.state.lineHeight}
-                    onChange={this.onChangeLineHeight}
                     displayText="Line Height"
                     rangeMin={0.5}
                     rangeMax={2.5}
                     rangeStep={0.2}
+                    value={1.16}
                   />
-                  <Input
+
+                  <RangeBarReact
+                    canvas={this.state.canvas}
                     id="letterSpacing"
-                    type="range"
-                    value={this.state.letterSpacing}
-                    onChange={this.onChangeLetterSpacing}
                     displayText="Letter Spacing"
                     rangeMin={-200}
                     rangeMax={800}
                     rangeStep={1}
+                    value={10}
                   />
-                  <button onClick={this.onClickBold}>B</button>
-                  <button onClick={this.onClickUnderLine}>U</button>
+                  <ButtonReact
+                    id="bold"
+                    canvas={this.state.canvas}
+                    displayText={"B"}
+                  />
+                  <ButtonReact
+                    id="underLine"
+                    canvas={this.state.canvas}
+                    displayText={"U"}
+                  />
+                  <ButtonReact
+                    id="italic"
+                    canvas={this.state.canvas}
+                    displayText={"I"}
+                  />
                 </div>
               </div>
               <canvas
@@ -543,9 +398,14 @@ class DragDrop extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => {
+  return { imgSrcData: state.getImagesSrc, fontListData: state.getFontList };
+};
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  onGetImageSrc: getImageSrc,
+  onGetFontsList: getFontsList
+};
 
 export default connect(
   mapStateToProps,
@@ -553,24 +413,3 @@ export default connect(
 )(DragDrop);
 
 //Crop images
-
-// this.canvas.setBackgroundImage(
-//   this.state.selectedImg.src,
-//   this.canvas.renderAll.bind(this.canvas),
-//   {
-//     backgroundImageOpacity: 0.5,
-//     backgroundImageStretch: false,
-//     width: this.canvas.width,
-//     height: this.canvas.height,
-//     selectable: false
-//   });
-
-// --------------------------------------------------------
-
-// this.canvas.loadFromJSON(
-//   `{"version":"2.7.0","objects":[{"type":"image","version":"2.7.0","originX":"left","originY":"top","left":0,"top":0,"width":748,"height":421,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":0.67,"scaleY":0.67,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"src":"http://localhost:3000/assets/image/4.jpg","filters":[]},{"type":"image","version":"2.7.0","originX":"left","originY":"top","left":194.23,"top":107.84,"width":640,"height":360,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":0.78,"scaleY":0.78,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"src":"http://localhost:3000/assets/image/6.jpg","filters":[]},{"type":"textbox","version":"2.7.0","originX":"left","originY":"top","left":313.24,"top":218.04,"width":80,"height":25.42,"fill":"black","stroke":"#fff","strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"text":"type text","fontSize":22.5,"fontWeight":"normal","fontFamily":"helvetica neue","fontStyle":"normal","lineHeight":1.16,"underline":false,"overline":false,"linethrough":false,"textAlign":"left","textBackgroundColor":"","charSpacing":0,"minWidth":20,"splitByGrapheme":false,"styles":{}}]}`,
-//   this.canvas.renderAll.bind(this.canvas),
-//   function(o, object) {
-//     fabric.log(o, object);
-//   }
-// );
